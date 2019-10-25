@@ -7,8 +7,13 @@ public class Hiring {
     public static void main(String[] args){
         //Integer[][] companyArr = {{2,5,1,3,4}, {1,2,3,4,5}, {5,3,2,1,4}, {1,3,2,4,5}, {2,3,5,4,1}};
         //Integer[][] programmerArr = {{5,1,4,2,3},{4,5,2,1,3},{4,2,3,5,1},{3,2,4,1,5},{1,4,2,3,5}};
-        Integer[][] companyArr = {{3,2,1}, {3,2,1}, {2,3,1}};
-        Integer[][] programmerArr = {{2,1,3}, {1,2,3}, {2,1,3}};
+
+//        Integer[][] companyArr = {{3,2,1}, {3,2,1}, {2,3,1}};
+//        Integer[][] programmerArr = {{2,1,3}, {1,2,3}, {2,1,3}};
+
+        Integer[][] companyArr = {{2,3,1}, {2,3,1}, {1,3,2}};
+        Integer[][] programmerArr = {{1,2,3}, {3,2,1}, {2,1,3}};
+
         companies = makePreferencesQueue(companyArr);
         programmers = makePreferencesStack(programmerArr);
 
@@ -105,19 +110,20 @@ public class Hiring {
         }
         hired[companyHiring] = programmerHired;
         if (nowHiring != null) {
-            hireEmployee(companies.get(nowHiring), programmers, hired, nowHiring );
+            hireEmployee(companies.get(nowHiring), programmers, hired, nowHiring);
         }
 
     }
 
     static boolean checkSolution(ArrayList<Queue<Integer>> companies, ArrayList<Stack<Integer>> programmers, Integer[] solution){
+        String solAsLetters = "ABC";
         for(int i = 0; i<solution.length; i++){
-            for(int j=0; j<solution.length; j++){
+            for(int j = 0; j<solution.length; j++){
                 if(i == j){
                     continue;
-                }
-                if(companyWantsSwap(new LinkedList<>(companies.get(i)), solution[i] - 1, solution[j] - 1) && programmerWantsSwap((Stack<Integer>) programmers.get(solution[j] - 1).clone(), i, j)){
-                    System.out.println(j + " should take the job of " + i);
+                }                                                                                                                                                 //solution[j] - 1
+                if(companyWantsSwap(new LinkedList<>(companies.get(i)), solution[i] - 1, solution[j] - 1) && programmerWantsSwap((Stack<Integer>) programmers.get(solution[j] - 1).clone(), i, j)) {
+                    System.out.println(solAsLetters.charAt(j) + " should take the job of " + solAsLetters.charAt(i));
                     return false;
                 }
             }
