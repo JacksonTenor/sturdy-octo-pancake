@@ -19,7 +19,7 @@ public class Hiring {
         System.out.println("Programmers: " + programmers);
         System.out.println("----------------------------");
         Integer[] solution = hireEmployees(companies, programmers);
-        System.out.println(checkSolution(companies,programmers, solution));
+        System.out.println("a " + checkSolution(companies,programmers, solution));
         //Generate random data
         Random rng = new Random();
         int size = 3;
@@ -40,12 +40,12 @@ public class Hiring {
             programmerStack.addAll(s);
             programmers.add(programmerStack);
         }
-        System.out.println(companies);
-        System.out.println(programmers);
+        System.out.println("c's " + companies);
+        System.out.println("p's " + programmers);
         solution = hireEmployees((ArrayList<Queue<Integer>>) companies.clone(), (ArrayList<Stack<Integer>>) programmers.clone());
-        System.out.println(checkSolution(companies, programmers, solution));
+        System.out.println("b " + checkSolution(companies, programmers, solution));
 
-        System.out.println(Arrays.toString(solution));
+        System.out.println("solution: " + Arrays.toString(solution));
 
     }
 
@@ -58,6 +58,7 @@ public class Hiring {
         }
         return list;
     }
+
     static ArrayList<Stack<Integer>> makePreferencesStack(Integer[][] arr){
         ArrayList<Stack<Integer>> list = new ArrayList<>();
         for(Integer[] innerArr: arr){
