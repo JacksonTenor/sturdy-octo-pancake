@@ -1,6 +1,3 @@
-
-import sun.awt.image.ImageWatched;
-
 import java.util.*;
 
 public class Hiring {
@@ -17,9 +14,13 @@ public class Hiring {
 
         System.out.println("Companies: " + companies);
         System.out.println("Programmers: " + programmers);
-        System.out.println("----------------------------");
         Integer[] solution = hireEmployees(companies, programmers);
         System.out.println("a " + checkSolution(companies,programmers, solution));
+        System.out.println("solution: " + Arrays.toString(solution));
+
+        System.out.println("----------------------------");
+        System.out.println("random");
+        System.out.println("----------------------------");
         //Generate random data
         Random rng = new Random();
         int size = 3;
@@ -40,12 +41,12 @@ public class Hiring {
             programmerStack.addAll(s);
             programmers.add(programmerStack);
         }
-        System.out.println("c's " + companies);
-        System.out.println("p's " + programmers);
-        solution = hireEmployees((ArrayList<Queue<Integer>>) companies.clone(), (ArrayList<Stack<Integer>>) programmers.clone());
-        System.out.println("b " + checkSolution(companies, programmers, solution));
 
-        System.out.println("solution: " + Arrays.toString(solution));
+        System.out.println("rand c's " + companies);
+        System.out.println("rand p's " + programmers);
+        solution = hireEmployees((ArrayList<Queue<Integer>>) companies.clone(), (ArrayList<Stack<Integer>>) programmers.clone());
+        System.out.println("rand b " + checkSolution(companies, programmers, solution));
+        System.out.println("rand solution: " + Arrays.toString(solution));
 
     }
 
@@ -73,7 +74,6 @@ public class Hiring {
         for(int i=0; i<companies.size(); i++){
             Queue<Integer> company = companies.get(i);
             hireEmployee(company, programmers, hired, i);
-
         }
         return hired;
     }
@@ -87,12 +87,11 @@ public class Hiring {
                 while (candidate.peek() != companyIndex + 1) {
                     candidate.pop();
                 }
-            }else{
+            } else {
                 company.poll();
             }
         }
         replaceEmployee(hired, companyIndex, employeeNum,  companies, programmers);
-
     }
 
     static void replaceEmployee(Integer[] hired, Integer companyHiring, Integer programmerHired, ArrayList<Queue<Integer>> companies, ArrayList<Stack<Integer>> programmers){
@@ -123,7 +122,6 @@ public class Hiring {
                 }
             }
         }
-
         return true;
     }
 
