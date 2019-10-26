@@ -27,31 +27,37 @@ public class Hiring {
         System.out.println("random");
         System.out.println("----------------------------");
         //Generate random data
-        Random rng = new Random();
-        int size = 3;
-        companies = new ArrayList<>();
-        programmers = new ArrayList<>();
+        for(int r=0; r<100; r++) {
+            Random rng = new Random();
+            int size = rng.nextInt(7) + 3;
+            companies = new ArrayList<>();
+            programmers = new ArrayList<>();
 
-        for (int i = 0; i < size; i++) {
-            LinkedList<Integer> q = new LinkedList<>();
-            LinkedList<Integer> s = new LinkedList<>();
-            for (int j = 1; j <= size; j++) {
-                s.add(j);
-                q.add(j);
+            for (int i = 0; i < size; i++) {
+                LinkedList<Integer> q = new LinkedList<>();
+                LinkedList<Integer> s = new LinkedList<>();
+                for (int j = 1; j <= size; j++) {
+                    s.add(j);
+                    q.add(j);
+                }
+                Collections.shuffle(q);
+                Collections.shuffle(s);
+                companies.add(q);
+                Stack programmerStack = new Stack();
+                programmerStack.addAll(s);
+                programmers.add(programmerStack);
             }
-            Collections.shuffle(q);
-            Collections.shuffle(s);
-            companies.add(q);
-            Stack programmerStack = new Stack();
-            programmerStack.addAll(s);
-            programmers.add(programmerStack);
-        }
 
-        System.out.println("rand c's " + companies);
-        System.out.println("rand p's " + programmers);
-        solution = hireEmployees((ArrayList<Queue<Integer>>) companies.clone(), (ArrayList<Stack<Integer>>) programmers.clone());
-        System.out.println("rand b " + checkSolution(companies, programmers, solution));
-        System.out.println("rand solution: " + Arrays.toString(solution));
+            System.out.println("rand c's " + companies);
+            System.out.println("rand p's " + programmers);
+            solution = hireEmployees((ArrayList<Queue<Integer>>) companies.clone(), (ArrayList<Stack<Integer>>) programmers.clone());
+            System.out.println("rand b " + checkSolution(companies, programmers, solution));
+            System.out.println("rand solution: " + Arrays.toString(solution));
+            if(!checkSolution(companies, programmers, solution)){
+                System.out.println("ABORT");
+                break;
+            }
+        }
 
     }
 
@@ -112,18 +118,19 @@ public class Hiring {
         if (nowHiring != null) {
             hireEmployee(companies.get(nowHiring), programmers, hired, nowHiring);
         }
-
     }
 
-    static boolean checkSolution(ArrayList<Queue<Integer>> companies, ArrayList<Stack<Integer>> programmers, Integer[] solution){
+    static boolean checkSolution(ArrayList<Queue<Integer>> companies, ArrayList<Stack<Integer>> programmers, Integer[] solution, int k){
         String solAsLetters = "ABC";
         for(int i = 0; i<solution.length; i++){
             for(int j = 0; j<solution.length; j++){
-                if(i == j){
-                    continue;
-                }                                                                                                                                                 //solution[j] - 1
+                if(i == j) {
+                    break;
+                }
+                //solution[j] - 1
                 if(companyWantsSwap(new LinkedList<>(companies.get(i)), solution[i] - 1, solution[j] - 1) && programmerWantsSwap((Stack<Integer>) programmers.get(solution[j] - 1).clone(), i, j)) {
-                    System.out.println(solAsLetters.charAt(j) + " should take the job of " + solAsLetters.charAt(i));
+                    System.out.println(Arrays.toString(solution) + " is false,");
+                    System.out.println("Programmer " + (j + 1) + " should take the job at " + solAsLetters.charAt(i));
                     return false;
                 }
             }
@@ -131,7 +138,8 @@ public class Hiring {
         return true;
     }
 
-    static boolean companyWantsSwap(Queue<Integer> company, int current, int option){
+    static boolean companyWantsSwap(Queue<Integer> icompany, int current, int option){
+        Queue<Integer> company = new LinkedList<>(icompany);
         while(!company.isEmpty()){
             Integer preference = company.poll();
             if(current == preference){
@@ -143,7 +151,8 @@ public class Hiring {
         }
         return false;
     }
-    static boolean programmerWantsSwap(Stack<Integer> programmer, int current, int option){
+    static boolean programmerWantsSwap(Stack<Integer> iprogrammer, int current, int option){
+        Stack<Integer> programmer = (Stack<Integer>) iprogrammer.clone();
         while(!programmer.isEmpty()){
             Integer preference = programmer.pop();
             if(current == preference){
@@ -156,4 +165,28 @@ public class Hiring {
         return false;
     }
 
+    static boolean checkSolution(ArrayList<Queue<Integer>> companies, ArrayList<Stack<Integer>> programmers, Integer[] solution){
+        for(int i=0; i<solution.length; i++){
+            //i represents a company
+            for(int j=0; j<solution.length; j++){
+                //j represents a programmer
+                boolean companySwap = companyWantsSwap(companies.get(i), solution[i], j);
+                boolean programmerSwap = programmerWantsSwap(programmers.get(j), getPosition(solution, j + 1) + 1, i);
+                if(companySwap && programmerSwap){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    static int getPosition(Integer[] arr, Integer value){
+        for(int i=0; i<arr.length; i++){
+            if(arr[i].equals(value)){
+                return i;
+            }
+        }
+        return -1;
+    }
 }
