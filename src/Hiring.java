@@ -14,8 +14,8 @@ public class Hiring {
         Integer[][] companyArr = {{2,3,1}, {2,3,1}, {1,3,2}};
         Integer[][] programmerArr = {{1,2,3}, {3,2,1}, {2,1,3}};
 
-        companies = makePreferencesQueue(companyArr);
-        programmers = makePreferencesStack(programmerArr);
+        companies = makePreferencesQueue(companyArr);  //DATA: Companies is a Queue
+        programmers = makePreferencesStack(programmerArr);  //DATA: Programmers is a stack
 
         System.out.println("Companies: " + companies);
         System.out.println("Programmers: " + programmers);
@@ -24,35 +24,39 @@ public class Hiring {
         System.out.println("solution: " + Arrays.toString(solution));
 
         System.out.println("----------------------------");
-        System.out.println("random");
+        System.out.println("----------------------------");
+        System.out.println("random data below, separated by one line each");
+        System.out.println("----------------------------");
         System.out.println("----------------------------");
         //Generate random data
-        for(int r=0; r<100; r++) {
+        for(int runXTests=0; runXTests<100; runXTests++) { //TESTING: Change R to change amount of test runs
             Random rng = new Random();
-            int size = rng.nextInt(7) + 3;
+            int size = rng.nextInt(7) + 3;  //TESTING: Determines amount of companies/programmers, from
+                                                  //sizes 3 to 9 (nextInt from 0 [incl] to specified number [excl])
             companies = new ArrayList<>();
             programmers = new ArrayList<>();
 
             for (int i = 0; i < size; i++) {
-                LinkedList<Integer> q = new LinkedList<>();
-                LinkedList<Integer> s = new LinkedList<>();
+                LinkedList<Integer> comp = new LinkedList<>();
+                LinkedList<Integer> prog = new LinkedList<>();
                 for (int j = 1; j <= size; j++) {
-                    s.add(j);
-                    q.add(j);
+                    prog.add(j);
+                    comp.add(j);
                 }
-                Collections.shuffle(q);
-                Collections.shuffle(s);
-                companies.add(q);
+                Collections.shuffle(comp);  //TESTING: Shuffles company preference list
+                Collections.shuffle(prog);  //TESTING: Shuffles programmer preference list
+                companies.add(comp);
                 Stack programmerStack = new Stack();
-                programmerStack.addAll(s);
+                programmerStack.addAll(prog);
                 programmers.add(programmerStack);
             }
 
-            System.out.println("rand c's " + companies);
-            System.out.println("rand p's " + programmers);
+            System.out.println("c's " + companies);
+            System.out.println("p's " + programmers);
             solution = hireEmployees((ArrayList<Queue<Integer>>) companies.clone(), (ArrayList<Stack<Integer>>) programmers.clone());
-            System.out.println("rand b " + checkSolution(companies, programmers, solution));
-            System.out.println("rand solution: " + Arrays.toString(solution));
+            System.out.println("Solution is valid: " + checkSolution(companies, programmers, solution));
+            System.out.println("solution: " + Arrays.toString(solution));
+            System.out.println("----------------------------");
             if(!checkSolution(companies, programmers, solution)){
                 System.out.println("ABORT");
                 break;
@@ -120,24 +124,28 @@ public class Hiring {
         }
     }
 
-    static boolean checkSolution(ArrayList<Queue<Integer>> companies, ArrayList<Stack<Integer>> programmers, Integer[] solution, int k){
-        String solAsLetters = "ABC";
-        for(int i = 0; i<solution.length; i++){
-            for(int j = 0; j<solution.length; j++){
-                if(i == j) {
-                    break;
-                }
-                //solution[j] - 1
-                if(companyWantsSwap(new LinkedList<>(companies.get(i)), solution[i] - 1, solution[j] - 1) && programmerWantsSwap((Stack<Integer>) programmers.get(solution[j] - 1).clone(), i, j)) {
-                    System.out.println(Arrays.toString(solution) + " is false,");
-                    System.out.println("Programmer " + (j + 1) + " should take the job at " + solAsLetters.charAt(i));
+    //-----------------------------------------------------------------------------------------------------------------
+    // TESTING: Solution checking.
+    //-----------------------------------------------------------------------------------------------------------------
+
+    // Master solution checker
+    static boolean checkSolution(ArrayList<Queue<Integer>> companies, ArrayList<Stack<Integer>> programmers, Integer[] solution){
+        for(int i=0; i<solution.length; i++){
+            //i represents a company
+            for(int j=0; j<solution.length; j++){
+                //j represents a programmer
+                boolean companySwap = companyWantsSwap(companies.get(i), solution[i], j);
+                boolean programmerSwap = programmerWantsSwap(programmers.get(j), getPosition(solution, j + 1) + 1, i);
+                if(companySwap && programmerSwap){
                     return false;
                 }
             }
         }
+
         return true;
     }
 
+    // 
     static boolean companyWantsSwap(Queue<Integer> icompany, int current, int option){
         Queue<Integer> company = new LinkedList<>(icompany);
         while(!company.isEmpty()){
@@ -164,22 +172,7 @@ public class Hiring {
         }
         return false;
     }
-
-    static boolean checkSolution(ArrayList<Queue<Integer>> companies, ArrayList<Stack<Integer>> programmers, Integer[] solution){
-        for(int i=0; i<solution.length; i++){
-            //i represents a company
-            for(int j=0; j<solution.length; j++){
-                //j represents a programmer
-                boolean companySwap = companyWantsSwap(companies.get(i), solution[i], j);
-                boolean programmerSwap = programmerWantsSwap(programmers.get(j), getPosition(solution, j + 1) + 1, i);
-                if(companySwap && programmerSwap){
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
+    //-----------------------------------------------------------------------------------------------------------------
 
     static int getPosition(Integer[] arr, Integer value){
         for(int i=0; i<arr.length; i++){
