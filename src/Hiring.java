@@ -84,6 +84,7 @@ public class Hiring {
         }
         return list;
     }
+
     static Integer[] hireEmployees(ArrayList<Queue<Integer>> companies, ArrayList<Stack<Integer>> programmers){
         Integer[] hired = new Integer[companies.size()];
         for(int i=0; i<companies.size(); i++){
@@ -96,7 +97,7 @@ public class Hiring {
     static void hireEmployee(Queue<Integer> company, ArrayList<Stack<Integer>> programmers,  Integer[] hired, Integer companyIndex){
         Integer employeeNum = null;
         while(employeeNum == null) {
-            Stack<Integer> candidate = programmers.get(company.peek() -1);
+            Stack<Integer> candidate = programmers.get(company.peek() - 1);
             if (candidate.contains(companyIndex + 1)) { //determines if the programmer would prefer this company to their current, or always true if programmer has no job.
                 employeeNum = company.peek();
                 while (candidate.peek() != companyIndex + 1) {
@@ -128,24 +129,21 @@ public class Hiring {
     // TESTING: Solution checking.
     //-----------------------------------------------------------------------------------------------------------------
 
-    // Master solution checker
+    // Master solution checker.
     static boolean checkSolution(ArrayList<Queue<Integer>> companies, ArrayList<Stack<Integer>> programmers, Integer[] solution){
-        for(int i=0; i<solution.length; i++){
-            //i represents a company
-            for(int j=0; j<solution.length; j++){
-                //j represents a programmer
-                boolean companySwap = companyWantsSwap(companies.get(i), solution[i], j);
-                boolean programmerSwap = programmerWantsSwap(programmers.get(j), getPosition(solution, j + 1) + 1, i);
-                if(companySwap && programmerSwap){
+        for(int company=0; company<solution.length; company++){
+            for(int programmer=0; programmer<solution.length; programmer++){
+                boolean companySwap = companyWantsSwap(companies.get(company), solution[company], programmer);
+                boolean programmerSwap = programmerWantsSwap(programmers.get(programmer), getPosition(solution, programmer + 1) + 1, company);
+                if(companySwap && programmerSwap){  //If both a company and a programmer want a swap, the solution is wrong
                     return false;
                 }
             }
         }
-
         return true;
     }
 
-    // 
+    // As long as the head of the queue 
     static boolean companyWantsSwap(Queue<Integer> icompany, int current, int option){
         Queue<Integer> company = new LinkedList<>(icompany);
         while(!company.isEmpty()){
@@ -159,6 +157,8 @@ public class Hiring {
         }
         return false;
     }
+
+    // If
     static boolean programmerWantsSwap(Stack<Integer> iprogrammer, int current, int option){
         Stack<Integer> programmer = (Stack<Integer>) iprogrammer.clone();
         while(!programmer.isEmpty()){
